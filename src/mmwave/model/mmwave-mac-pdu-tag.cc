@@ -1,5 +1,5 @@
- /* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
- /*
+/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
+/*
  *   Copyright (c) 2011 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
  *   Copyright (c) 2015, NYU WIRELESS, Tandon School of Engineering, New York University
  *
@@ -25,77 +25,76 @@
  *        		  Menglei Zhang <menglei@nyu.edu>
  */
 
-
 #include "mmwave-mac-pdu-tag.h"
 #include "mmwave-phy-mac-common.h"
 #include "ns3/tag.h"
 #include "ns3/uinteger.h"
 
-namespace ns3 {
-
-NS_OBJECT_ENSURE_REGISTERED (MmWaveMacPduTag);
-
-MmWaveMacPduTag::MmWaveMacPduTag () : m_sfnSf (SfnSf()), m_symStart(0), m_numSym(0), m_tagSize (6)
+namespace ns3
 {
-}
 
-MmWaveMacPduTag::MmWaveMacPduTag (SfnSf sfn)
-  :  m_sfnSf (sfn), m_symStart(0), m_numSym(0), m_tagSize (6)
-{
-}
+	NS_OBJECT_ENSURE_REGISTERED(MmWaveMacPduTag);
 
-MmWaveMacPduTag::MmWaveMacPduTag (SfnSf sfn, uint8_t symStart, uint8_t numSym)
-  :  m_sfnSf (sfn), m_symStart(symStart), m_numSym(numSym), m_tagSize (6)
-{
-}
+	MmWaveMacPduTag::MmWaveMacPduTag() : m_sfnSf(SfnSf()), m_symStart(0), m_numSym(0), m_tagSize(6)
+	{
+	}
 
-TypeId
-MmWaveMacPduTag::GetTypeId (void)
-{
-  static TypeId tid = TypeId ("ns3::MmWaveMacPduTag")
-    .SetParent<Tag> ()
-    .AddConstructor<MmWaveMacPduTag> ();
-  return tid;
-}
+	MmWaveMacPduTag::MmWaveMacPduTag(SfnSf sfn)
+		: m_sfnSf(sfn), m_symStart(0), m_numSym(0), m_tagSize(6)
+	{
+	}
 
-TypeId
-MmWaveMacPduTag::GetInstanceTypeId (void) const
-{
-  return GetTypeId ();
-}
+	MmWaveMacPduTag::MmWaveMacPduTag(SfnSf sfn, uint8_t symStart, uint8_t numSym)
+		: m_sfnSf(sfn), m_symStart(symStart), m_numSym(numSym), m_tagSize(6)
+	{
+	}
 
-uint32_t
-MmWaveMacPduTag::GetSerializedSize (void) const
-{
-  return (m_tagSize);
-}
+	TypeId
+	MmWaveMacPduTag::GetTypeId(void)
+	{
+		static TypeId tid = TypeId("ns3::MmWaveMacPduTag")
+								.SetParent<Tag>()
+								.AddConstructor<MmWaveMacPduTag>();
+		return tid;
+	}
 
-void
-MmWaveMacPduTag::Serialize (TagBuffer i) const
-{
-	i.WriteU16 (m_sfnSf.m_frameNum);
-	i.WriteU8 (m_sfnSf.m_sfNum);
-	i.WriteU8 (m_sfnSf.m_slotNum);
-	i.WriteU8 (m_symStart);
-	i.WriteU8 (m_numSym);
-}
+	TypeId
+	MmWaveMacPduTag::GetInstanceTypeId(void) const
+	{
+		return GetTypeId();
+	}
 
-void
-MmWaveMacPduTag::Deserialize (TagBuffer i)
-{
-	m_sfnSf.m_frameNum = (uint16_t)i.ReadU16 ();
-	m_sfnSf.m_sfNum = (uint8_t)i.ReadU8 ();
-	m_sfnSf.m_slotNum = (uint8_t)i.ReadU8 ();
-	m_symStart = (uint8_t)i.ReadU8 ();
-	m_numSym = (uint8_t)i.ReadU8 ();
-	m_tagSize = 6;
-}
+	uint32_t
+	MmWaveMacPduTag::GetSerializedSize(void) const
+	{
+		return (m_tagSize);
+	}
 
-void
-MmWaveMacPduTag::Print (std::ostream &os) const
-{
-  os << m_sfnSf.m_sfNum << " " << m_sfnSf.m_slotNum;
-}
+	void
+	MmWaveMacPduTag::Serialize(TagBuffer i) const
+	{
+		i.WriteU16(m_sfnSf.m_frameNum);
+		i.WriteU8(m_sfnSf.m_sfNum);
+		i.WriteU8(m_sfnSf.m_slotNum);
+		i.WriteU8(m_symStart);
+		i.WriteU8(m_numSym);
+	}
+
+	void
+	MmWaveMacPduTag::Deserialize(TagBuffer i)
+	{
+		m_sfnSf.m_frameNum = (uint16_t)i.ReadU16();
+		m_sfnSf.m_sfNum = (uint8_t)i.ReadU8();
+		m_sfnSf.m_slotNum = (uint8_t)i.ReadU8();
+		m_symStart = (uint8_t)i.ReadU8();
+		m_numSym = (uint8_t)i.ReadU8();
+		m_tagSize = 6;
+	}
+
+	void
+	MmWaveMacPduTag::Print(std::ostream &os) const
+	{
+		os << m_sfnSf.m_sfNum << " " << m_sfnSf.m_slotNum;
+	}
 
 } // namespace ns3
-

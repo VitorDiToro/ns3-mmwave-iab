@@ -1,5 +1,5 @@
- /* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
- /*
+/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
+/*
  *   Copyright (c) 2011 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
  *   Copyright (c) 2015, NYU WIRELESS, Tandon School of Engineering, New York University
  *
@@ -25,7 +25,6 @@
  *        		  Menglei Zhang <menglei@nyu.edu>
  */
 
-
 #ifndef MMWAVE_SPECTRUM_VALUE_HELPER_H
 #define MMWAVE_SPECTRUM_VALUE_HELPER_H
 
@@ -33,43 +32,36 @@
 #include <ns3/mmwave-phy-mac-common.h>
 #include <vector>
 
-
-namespace ns3 {
-
-
-/**
- * \ingroup mmwave
- *
- * \brief This class defines all functions to create spectrum model for mmwave
- */
-class MmWaveSpectrumValueHelper
+namespace ns3
 {
-public:
 
-  static Ptr<SpectrumModel> GetSpectrumModel (Ptr<MmWavePhyMacCommon> ptrConfig);
+  /**
+   * \ingroup mmwave
+   *
+   * \brief This class defines all functions to create spectrum model for mmwave
+   */
+  class MmWaveSpectrumValueHelper
+  {
+  public:
+    static Ptr<SpectrumModel> GetSpectrumModel(Ptr<MmWavePhyMacCommon> ptrConfig);
 
-  static Ptr<SpectrumValue> CreateTxPowerSpectralDensity (Ptr<MmWavePhyMacCommon> ptrConfig,
-                                                          double powerTx,
-                                                          std::vector <int> activeRbs);
+    static Ptr<SpectrumValue> CreateTxPowerSpectralDensity(Ptr<MmWavePhyMacCommon> ptrConfig,
+                                                           double powerTx,
+                                                           std::vector<int> activeRbs);
 
+    static Ptr<SpectrumValue> CreateTxPowerSpectralDensity(Ptr<MmWavePhyMacCommon> ptrConfig,
+                                                           double powerTx,
+                                                           std::map<int, double> powerTxMap,
+                                                           std::vector<int> activeRbs);
 
-  static Ptr<SpectrumValue> CreateTxPowerSpectralDensity (Ptr<MmWavePhyMacCommon> ptrConfig,
-                                                          double powerTx,
-                                                          std::map<int, double> powerTxMap,
-                                                          std::vector <int> activeRbs);
+    static Ptr<SpectrumValue> CreateNoisePowerSpectralDensity(Ptr<MmWavePhyMacCommon> ptrConfig, double noiseFigure);
 
-  static Ptr<SpectrumValue> CreateNoisePowerSpectralDensity (Ptr<MmWavePhyMacCommon> ptrConfig, double noiseFigure);
+    static Ptr<SpectrumValue> CreateNoisePowerSpectralDensity(double noiseFigure, Ptr<SpectrumModel> spectrumModel);
 
-
-  static Ptr<SpectrumValue> CreateNoisePowerSpectralDensity (double noiseFigure, Ptr<SpectrumModel> spectrumModel);
-
-private:
-  static Ptr<SpectrumModel> m_model;
-};
-
+  private:
+    static Ptr<SpectrumModel> m_model;
+  };
 
 } // namespace ns3
-
-
 
 #endif /*  MMWAVE_SPECTRUM_VALUE_HELPER_H */

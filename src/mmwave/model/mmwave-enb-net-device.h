@@ -1,35 +1,32 @@
- /* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
- /*
+/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
+/*
  *   Copyright (c) 2011 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
  *   Copyright (c) 2015, NYU WIRELESS, Tandon School of Engineering, New York University
- *  
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2 as
  *   published by the Free Software Foundation;
- *  
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *  
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *  
+ *
  *   Author: Marco Miozzo <marco.miozzo@cttc.es>
  *           Nicola Baldo  <nbaldo@cttc.es>
- *  
+ *
  *   Modified by: Marco Mezzavilla < mezzavilla@nyu.edu>
  *        	 	  Sourjya Dutta <sdutta@nyu.edu>
  *        	 	  Russell Ford <russell.ford@nyu.edu>
  *        		  Menglei Zhang <menglei@nyu.edu>
  */
 
-
-
 #ifndef SRC_MMWAVE_MODEL_MMWAVE_ENB_NET_DEVICE_H_
 #define SRC_MMWAVE_MODEL_MMWAVE_ENB_NET_DEVICE_H_
-
 
 #include "mmwave-net-device.h"
 #include "ns3/event-id.h"
@@ -43,78 +40,73 @@
 #include <vector>
 #include <ns3/lte-enb-rrc.h>
 
-
-namespace ns3{
-/* Add forward declarations here */
-class Packet;
-class PacketBurst;
-class Node;
-//class MmWavePhy;
-class MmWaveEnbPhy;
-class MmWaveEnbMac;
-
-class MmWaveEnbNetDevice : public MmWaveNetDevice
+namespace ns3
 {
-public:
-	static TypeId GetTypeId (void);
+	/* Add forward declarations here */
+	class Packet;
+	class PacketBurst;
+	class Node;
+	// class MmWavePhy;
+	class MmWaveEnbPhy;
+	class MmWaveEnbMac;
 
-	MmWaveEnbNetDevice ();
+	class MmWaveEnbNetDevice : public MmWaveNetDevice
+	{
+	public:
+		static TypeId GetTypeId(void);
 
-	virtual ~MmWaveEnbNetDevice (void);
-	virtual void DoDispose (void);
-	virtual bool DoSend (Ptr<Packet> packet, const Address& dest, uint16_t protocolNumber);
+		MmWaveEnbNetDevice();
 
-    Ptr<MmWaveEnbPhy> GetPhy (void) const;
+		virtual ~MmWaveEnbNetDevice(void);
+		virtual void DoDispose(void);
+		virtual bool DoSend(Ptr<Packet> packet, const Address &dest, uint16_t protocolNumber);
 
-    uint16_t GetCellId () const;
+		Ptr<MmWaveEnbPhy> GetPhy(void) const;
 
-    uint8_t GetBandwidth () const;
+		uint16_t GetCellId() const;
 
-    void SetBandwidth (uint8_t bw);
+		uint8_t GetBandwidth() const;
 
-    void SetEarfcn(uint16_t earfcn);
+		void SetBandwidth(uint8_t bw);
 
-    uint16_t GetEarfcn() const;
+		void SetEarfcn(uint16_t earfcn);
 
-    void SetMac (Ptr<MmWaveEnbMac> mac);
+		uint16_t GetEarfcn() const;
 
-    Ptr<MmWaveEnbMac> GetMac (void);
+		void SetMac(Ptr<MmWaveEnbMac> mac);
 
-    void SetRrc (Ptr<LteEnbRrc> rrc);
+		Ptr<MmWaveEnbMac> GetMac(void);
 
-    Ptr<LteEnbRrc> GetRrc (void);
+		void SetRrc(Ptr<LteEnbRrc> rrc);
 
-    void SetAntennaNum (uint8_t antennaNum);
+		Ptr<LteEnbRrc> GetRrc(void);
 
-    uint8_t GetAntennaNum () const;
+		void SetAntennaNum(uint8_t antennaNum);
 
-protected:
+		uint8_t GetAntennaNum() const;
 
-    virtual void DoInitialize(void);
-    void UpdateConfig ();
+	protected:
+		virtual void DoInitialize(void);
+		void UpdateConfig();
 
+	private:
+		Ptr<MmWaveEnbPhy> m_phy;
 
-private:
+		Ptr<MmWaveEnbMac> m_mac;
 
-	Ptr<MmWaveEnbPhy> m_phy;
+		Ptr<MmWaveMacScheduler> m_scheduler;
 
-	Ptr<MmWaveEnbMac> m_mac;
+		Ptr<LteEnbRrc> m_rrc;
 
-	Ptr<MmWaveMacScheduler> m_scheduler;
+		uint16_t m_cellId; /* Cell Identifer. To uniquely identify an E-nodeB  */
 
-	Ptr<LteEnbRrc> m_rrc;
+		uint8_t m_Bandwidth; /* bandwidth in RBs (?) */
 
-	uint16_t m_cellId; /* Cell Identifer. To uniquely identify an E-nodeB  */
-
-	uint8_t m_Bandwidth; /* bandwidth in RBs (?) */
-
-	uint16_t m_Earfcn;  /* carrier frequency */
-	bool m_isConstructed;
-	bool m_isConfigured;
-	uint8_t m_antennaNum;
-
-};
+		uint16_t m_Earfcn; /* carrier frequency */
+		bool m_isConstructed;
+		bool m_isConfigured;
+		uint8_t m_antennaNum;
+	};
 }
-
 
 #endif /* SRC_MMWAVE_MODEL_MMWAVE_ENB_NET_DEVICE_H_ */

@@ -1,5 +1,5 @@
- /* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
- /*
+/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
+/*
  *   Copyright (c) 2011 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
  *   Copyright (c) 2015, NYU WIRELESS, Tandon School of Engineering, New York University
  *
@@ -25,96 +25,88 @@
  *        		  Menglei Zhang <menglei@nyu.edu>
  */
 
-
 #ifndef MMWAVE_SPECTRUM_SIGNAL_PARAMETERS_H
 #define MMWAVE_SPECTRUM_SIGNAL_PARAMETERS_H
 
-
 #include <ns3/spectrum-signal-parameters.h>
 
-namespace ns3 {
-
-class PacketBurst;
-class MmWaveControlMessage;
-
-/**
- * \ingroup mmwave
- *
- * Signal parameters for mmwave
- */
-struct mmwaveSpectrumSignalParameters : public SpectrumSignalParameters
+namespace ns3
 {
 
-  // inherited from SpectrumSignalParameters
-  virtual Ptr<SpectrumSignalParameters> Copy ();
+  class PacketBurst;
+  class MmWaveControlMessage;
 
   /**
-   * default constructor
+   * \ingroup mmwave
+   *
+   * Signal parameters for mmwave
    */
-  mmwaveSpectrumSignalParameters ();
+  struct mmwaveSpectrumSignalParameters : public SpectrumSignalParameters
+  {
 
-  /**
-   * copy constructor
-   */
-  mmwaveSpectrumSignalParameters (const mmwaveSpectrumSignalParameters& p);
+    // inherited from SpectrumSignalParameters
+    virtual Ptr<SpectrumSignalParameters> Copy();
 
-  Ptr<PacketBurst> packetBurst;
+    /**
+     * default constructor
+     */
+    mmwaveSpectrumSignalParameters();
 
-};
+    /**
+     * copy constructor
+     */
+    mmwaveSpectrumSignalParameters(const mmwaveSpectrumSignalParameters &p);
 
+    Ptr<PacketBurst> packetBurst;
+  };
 
+  struct MmwaveSpectrumSignalParametersDataFrame : public SpectrumSignalParameters
+  {
 
-struct MmwaveSpectrumSignalParametersDataFrame : public SpectrumSignalParameters
-{
-  
-  // inherited from SpectrumSignalParameters
-  virtual Ptr<SpectrumSignalParameters> Copy ();
-  
-  /**
-  * default constructor
-  */
-  MmwaveSpectrumSignalParametersDataFrame ();
-  
-  /**
-  * copy constructor
-  */
-  MmwaveSpectrumSignalParametersDataFrame (const MmwaveSpectrumSignalParametersDataFrame& p);
-  
-  Ptr<PacketBurst> packetBurst;
+    // inherited from SpectrumSignalParameters
+    virtual Ptr<SpectrumSignalParameters> Copy();
 
-  std::list<Ptr<MmWaveControlMessage> > ctrlMsgList;
-  
-  uint16_t cellId;
+    /**
+     * default constructor
+     */
+    MmwaveSpectrumSignalParametersDataFrame();
 
-  uint8_t slotInd;
-};
+    /**
+     * copy constructor
+     */
+    MmwaveSpectrumSignalParametersDataFrame(const MmwaveSpectrumSignalParametersDataFrame &p);
 
+    Ptr<PacketBurst> packetBurst;
 
-struct MmWaveSpectrumSignalParametersDlCtrlFrame : public SpectrumSignalParameters
-{
-  
-  // inherited from SpectrumSignalParameters
-  virtual Ptr<SpectrumSignalParameters> Copy ();
-  
-  /**
-  * default constructor
-  */
-  MmWaveSpectrumSignalParametersDlCtrlFrame ();
-  
-  /**
-  * copy constructor
-  */
-  MmWaveSpectrumSignalParametersDlCtrlFrame (const MmWaveSpectrumSignalParametersDlCtrlFrame& p);
-  
+    std::list<Ptr<MmWaveControlMessage>> ctrlMsgList;
 
-  std::list<Ptr<MmWaveControlMessage> > ctrlMsgList;
+    uint16_t cellId;
 
-  bool pss;
-  uint16_t cellId;
-};
+    uint8_t slotInd;
+  };
 
+  struct MmWaveSpectrumSignalParametersDlCtrlFrame : public SpectrumSignalParameters
+  {
 
-}  // namespace ns3
+    // inherited from SpectrumSignalParameters
+    virtual Ptr<SpectrumSignalParameters> Copy();
 
+    /**
+     * default constructor
+     */
+    MmWaveSpectrumSignalParametersDlCtrlFrame();
+
+    /**
+     * copy constructor
+     */
+    MmWaveSpectrumSignalParametersDlCtrlFrame(const MmWaveSpectrumSignalParametersDlCtrlFrame &p);
+
+    std::list<Ptr<MmWaveControlMessage>> ctrlMsgList;
+
+    bool pss;
+    uint16_t cellId;
+  };
+
+} // namespace ns3
 
 #endif /* MMWAVE_SPECTRUM_SIGNAL_PARAMETERS_H */

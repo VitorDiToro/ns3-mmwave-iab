@@ -1,5 +1,5 @@
- /* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
- /*
+/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
+/*
  *   Copyright (c) 2011 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
  *   Copyright (c) 2015, NYU WIRELESS, Tandon School of Engineering, New York University
  *
@@ -25,8 +25,6 @@
  *        		  Menglei Zhang <menglei@nyu.edu>
  */
 
-
-
 #include <map>
 #include <cmath>
 #include <ns3/log.h>
@@ -38,99 +36,95 @@
 
 // namespace std {
 
-
-
 // }
-namespace ns3 {
-
-NS_LOG_COMPONENT_DEFINE ("MmWaveSpectrumValueHelper");
-
-Ptr<SpectrumModel> MmWaveSpectrumValueHelper::m_model = 0;
-
-Ptr<SpectrumModel>
-MmWaveSpectrumValueHelper::GetSpectrumModel (Ptr<MmWavePhyMacCommon> ptrConfig)
+namespace ns3
 {
-  NS_LOG_FUNCTION (ptrConfig->GetCenterFrequency() << (uint32_t) ptrConfig->GetTotalNumChunk());
-  if (m_model != 0 && m_model->GetNumBands () != 0)
+
+  NS_LOG_COMPONENT_DEFINE("MmWaveSpectrumValueHelper");
+
+  Ptr<SpectrumModel> MmWaveSpectrumValueHelper::m_model = 0;
+
+  Ptr<SpectrumModel>
+  MmWaveSpectrumValueHelper::GetSpectrumModel(Ptr<MmWavePhyMacCommon> ptrConfig)
   {
-  	return m_model;
+    NS_LOG_FUNCTION(ptrConfig->GetCenterFrequency() << (uint32_t)ptrConfig->GetTotalNumChunk());
+    if (m_model != 0 && m_model->GetNumBands() != 0)
+    {
+      return m_model;
+    }
+
+    double fc = ptrConfig->GetCenterFrequency();
+    double f = 0.00;
+
+    NS_ASSERT_MSG(fc != 0, "The carrier frequency cannot be set to 0");
+
+    f = fc - (ptrConfig->GetTotalNumChunk() * ptrConfig->GetChunkWidth() / 2.0);
+
+    Bands rbs; // A vector representing each resource block
+    for (uint8_t numrb = 0; numrb < ptrConfig->GetTotalNumChunk(); ++numrb)
+    {
+      BandInfo rb;
+      rb.fl = f;
+      f += ptrConfig->GetChunkWidth() / 2;
+      rb.fc = f;
+      f += ptrConfig->GetChunkWidth() / 2;
+      rb.fh = f;
+
+      rbs.push_back(rb);
+    }
+    m_model = Create<SpectrumModel>(rbs);
+    return m_model;
   }
 
-  double fc = ptrConfig->GetCenterFrequency ();
-  double f = 0.00;
-
-  NS_ASSERT_MSG (fc != 0 , "The carrier frequency cannot be set to 0");
-
-  f = fc - (ptrConfig->GetTotalNumChunk() * ptrConfig->GetChunkWidth() / 2.0);
-
-  Bands rbs; // A vector representing each resource block
-  for (uint8_t numrb = 0; numrb < ptrConfig->GetTotalNumChunk(); ++numrb)
+  Ptr<SpectrumValue>
+  MmWaveSpectrumValueHelper::CreateTxPowerSpectralDensity(Ptr<MmWavePhyMacCommon> ptrConfig, double powerTx, std::vector<int> activeRbs)
   {
-	  BandInfo rb;
-	  rb.fl = f;
-	  f += ptrConfig->GetChunkWidth()/2;
-	  rb.fc = f;
-	  f += ptrConfig->GetChunkWidth()/2;
-	  rb.fh = f;
+    Ptr<SpectrumModel> model = GetSpectrumModel(ptrConfig);
+    Ptr<SpectrumValue> txPsd = Create<SpectrumValue>(model);
 
-	  rbs.push_back (rb);
-  }
-  m_model = Create<SpectrumModel> (rbs);
-  return m_model;
-}
-
-Ptr<SpectrumValue> 
-MmWaveSpectrumValueHelper::CreateTxPowerSpectralDensity (Ptr<MmWavePhyMacCommon> ptrConfig, double powerTx, std::vector <int> activeRbs)
-{
-    Ptr<SpectrumModel> model = GetSpectrumModel (ptrConfig);
-    Ptr<SpectrumValue> txPsd = Create <SpectrumValue> (model);
-
-    double powerTxW = std::pow (10., (powerTx - 30) / 10);
+    double powerTxW = std::pow(10., (powerTx - 30) / 10);
 
     double txPowerDensity = 0;
     txPowerDensity = (powerTxW / (ptrConfig->GetSystemBandwidth()));
 
-    for (std::vector <int>::iterator it = activeRbs.begin (); it != activeRbs.end (); it++)
+    for (std::vector<int>::iterator it = activeRbs.begin(); it != activeRbs.end(); it++)
     {
-        int rbId = (*it);
-        (*txPsd)[rbId] = txPowerDensity;
+      int rbId = (*it);
+      (*txPsd)[rbId] = txPowerDensity;
     }
 
-    NS_LOG_LOGIC (*txPsd);
+    NS_LOG_LOGIC(*txPsd);
 
     return txPsd;
+  }
 
-}
+  Ptr<SpectrumValue>
+  MmWaveSpectrumValueHelper::CreateTxPowerSpectralDensity(Ptr<MmWavePhyMacCommon> ptrConfig, double powerTx, std::map<int, double> powerTxMap, std::vector<int> activeRbs)
+  {
+    Ptr<SpectrumValue> dummy;
+    return dummy;
+  }
 
-Ptr<SpectrumValue>
-MmWaveSpectrumValueHelper::CreateTxPowerSpectralDensity (Ptr<MmWavePhyMacCommon> ptrConfig, double powerTx, std::map<int, double> powerTxMap, std::vector <int> activeRbs)
-{
-	Ptr<SpectrumValue> dummy;
-	 return dummy;
-}
+  Ptr<SpectrumValue>
+  MmWaveSpectrumValueHelper::CreateNoisePowerSpectralDensity(Ptr<MmWavePhyMacCommon> ptrConfig, double noiseFigure)
+  {
+    Ptr<SpectrumModel> model = GetSpectrumModel(ptrConfig);
+    Ptr<SpectrumValue> noisePsd = CreateNoisePowerSpectralDensity(noiseFigure, model);
+    return noisePsd;
+  }
 
+  Ptr<SpectrumValue>
+  MmWaveSpectrumValueHelper::CreateNoisePowerSpectralDensity(double noiseFigureDb, Ptr<SpectrumModel> spectrumModel)
+  {
+    NS_LOG_FUNCTION(noiseFigureDb << spectrumModel);
+    const double kT_dBm_Hz = -174.0; // dBm/Hz
+    double kT_W_Hz = std::pow(10.0, (kT_dBm_Hz - 30) / 10.0);
+    double noiseFigureLinear = std::pow(10.0, noiseFigureDb / 10.0);
+    double noisePowerSpectralDensity = kT_W_Hz * noiseFigureLinear;
 
-
-Ptr<SpectrumValue>
-MmWaveSpectrumValueHelper::CreateNoisePowerSpectralDensity (Ptr<MmWavePhyMacCommon> ptrConfig, double noiseFigure)
-{
-  Ptr<SpectrumModel> model = GetSpectrumModel (ptrConfig);
-  Ptr<SpectrumValue> noisePsd = CreateNoisePowerSpectralDensity (noiseFigure, model);
-  return noisePsd;
-}
-
-Ptr<SpectrumValue>
-MmWaveSpectrumValueHelper::CreateNoisePowerSpectralDensity (double noiseFigureDb, Ptr<SpectrumModel> spectrumModel)
-{
-  NS_LOG_FUNCTION (noiseFigureDb << spectrumModel);
-  const double kT_dBm_Hz = -174.0;  // dBm/Hz
-  double kT_W_Hz = std::pow (10.0, (kT_dBm_Hz - 30) / 10.0);
-  double noiseFigureLinear = std::pow (10.0, noiseFigureDb / 10.0);
-  double noisePowerSpectralDensity =  kT_W_Hz * noiseFigureLinear;
-
-  Ptr<SpectrumValue> noisePsd = Create <SpectrumValue> (spectrumModel);
-  (*noisePsd) = noisePowerSpectralDensity;
-  return noisePsd;
-}
+    Ptr<SpectrumValue> noisePsd = Create<SpectrumValue>(spectrumModel);
+    (*noisePsd) = noisePowerSpectralDensity;
+    return noisePsd;
+  }
 
 } // namespace ns3

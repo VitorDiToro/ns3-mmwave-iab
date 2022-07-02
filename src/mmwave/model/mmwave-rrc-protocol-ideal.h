@@ -1,8 +1,8 @@
- /* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
- /*
+/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
+/*
  *   Copyright (c) 2011 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
  *   Copyright (c) 2015, NYU WIRELESS, Tandon School of Engineering, New York University
- *   Copyright (c) 2016, University of Padova, Dep. of Information Engineering, SIGNET lab. 
+ *   Copyright (c) 2016, University of Padova, Dep. of Information Engineering, SIGNET lab.
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2 as
@@ -25,14 +25,12 @@
  *        	 	  Russell Ford <russell.ford@nyu.edu>
  *        		  Menglei Zhang <menglei@nyu.edu>
  *
- * Modified by: Michele Polese <michele.polese@gmail.com> 
+ * Modified by: Michele Polese <michele.polese@gmail.com>
  *                 Dual Connectivity and Handover functionalities
  */
 
-
 #ifndef MMWAVE_RRC_PROTOCOL_IDEAL_H
 #define MMWAVE_RRC_PROTOCOL_IDEAL_H
-
 
 #include <stdint.h>
 #include <map>
@@ -41,122 +39,110 @@
 #include <ns3/object.h>
 #include <ns3/lte-rrc-sap.h>
 
-namespace ns3 {
-
-class LteUeRrcSapProvider;
-class LteUeRrcSapUser;
-class LteEnbRrcSapProvider;
-class LteUeRrc;
-
-
-/**
- * Models the transmission of RRC messages from the UE to the eNB in
- * an ideal fashion, without errors and without consuming any radio
- * resources. 
- * 
- */
-class MmWaveUeRrcProtocolIdeal : public Object
+namespace ns3
 {
-  friend class MemberLteUeRrcSapUser<MmWaveUeRrcProtocolIdeal>;
 
-public:
+  class LteUeRrcSapProvider;
+  class LteUeRrcSapUser;
+  class LteEnbRrcSapProvider;
+  class LteUeRrc;
 
-  MmWaveUeRrcProtocolIdeal ();
-  virtual ~MmWaveUeRrcProtocolIdeal ();
+  /**
+   * Models the transmission of RRC messages from the UE to the eNB in
+   * an ideal fashion, without errors and without consuming any radio
+   * resources.
+   *
+   */
+  class MmWaveUeRrcProtocolIdeal : public Object
+  {
+    friend class MemberLteUeRrcSapUser<MmWaveUeRrcProtocolIdeal>;
 
-  // inherited from Object
-  virtual void DoDispose (void);
-  static TypeId GetTypeId (void);
+  public:
+    MmWaveUeRrcProtocolIdeal();
+    virtual ~MmWaveUeRrcProtocolIdeal();
 
-  void SetLteUeRrcSapProvider (LteUeRrcSapProvider* p);
-  LteUeRrcSapUser* GetLteUeRrcSapUser ();
-  
-  void SetUeRrc (Ptr<LteUeRrc> rrc);
-  
+    // inherited from Object
+    virtual void DoDispose(void);
+    static TypeId GetTypeId(void);
 
-private:
+    void SetLteUeRrcSapProvider(LteUeRrcSapProvider *p);
+    LteUeRrcSapUser *GetLteUeRrcSapUser();
 
-  // methods forwarded from LteUeRrcSapUser
-  void DoSetup (LteUeRrcSapUser::SetupParameters params);
-  void DoSendRrcConnectionRequest (LteRrcSap::RrcConnectionRequest msg);
-  void DoSendRrcConnectionSetupCompleted (LteRrcSap::RrcConnectionSetupCompleted msg);
-  void DoSendRrcConnectionReconfigurationCompleted (LteRrcSap::RrcConnectionReconfigurationCompleted msg);
-  void DoSendRrcConnectionReestablishmentRequest (LteRrcSap::RrcConnectionReestablishmentRequest msg);
-  void DoSendRrcConnectionReestablishmentComplete (LteRrcSap::RrcConnectionReestablishmentComplete msg);
-  void DoSendMeasurementReport (LteRrcSap::MeasurementReport msg);
-  void DoSendNotifySecondaryCellConnected (uint16_t mmWaveRnti, uint16_t mmWaveCellId);
+    void SetUeRrc(Ptr<LteUeRrc> rrc);
 
-  void SetEnbRrcSapProvider ();
+  private:
+    // methods forwarded from LteUeRrcSapUser
+    void DoSetup(LteUeRrcSapUser::SetupParameters params);
+    void DoSendRrcConnectionRequest(LteRrcSap::RrcConnectionRequest msg);
+    void DoSendRrcConnectionSetupCompleted(LteRrcSap::RrcConnectionSetupCompleted msg);
+    void DoSendRrcConnectionReconfigurationCompleted(LteRrcSap::RrcConnectionReconfigurationCompleted msg);
+    void DoSendRrcConnectionReestablishmentRequest(LteRrcSap::RrcConnectionReestablishmentRequest msg);
+    void DoSendRrcConnectionReestablishmentComplete(LteRrcSap::RrcConnectionReestablishmentComplete msg);
+    void DoSendMeasurementReport(LteRrcSap::MeasurementReport msg);
+    void DoSendNotifySecondaryCellConnected(uint16_t mmWaveRnti, uint16_t mmWaveCellId);
 
-  Ptr<LteUeRrc> m_rrc;
-  uint16_t m_rnti;
-  LteUeRrcSapProvider* m_ueRrcSapProvider;
-  LteUeRrcSapUser* m_ueRrcSapUser;
-  LteEnbRrcSapProvider* m_enbRrcSapProvider;
-  
-};
+    void SetEnbRrcSapProvider();
 
+    Ptr<LteUeRrc> m_rrc;
+    uint16_t m_rnti;
+    LteUeRrcSapProvider *m_ueRrcSapProvider;
+    LteUeRrcSapUser *m_ueRrcSapUser;
+    LteEnbRrcSapProvider *m_enbRrcSapProvider;
+  };
 
-/**
- * Models the transmission of RRC messages from the UE to the eNB in
- * an ideal fashion, without errors and without consuming any radio
- * resources. 
- * 
- */
-class MmWaveEnbRrcProtocolIdeal : public Object
-{
-  friend class MemberLteEnbRrcSapUser<MmWaveEnbRrcProtocolIdeal>;
+  /**
+   * Models the transmission of RRC messages from the UE to the eNB in
+   * an ideal fashion, without errors and without consuming any radio
+   * resources.
+   *
+   */
+  class MmWaveEnbRrcProtocolIdeal : public Object
+  {
+    friend class MemberLteEnbRrcSapUser<MmWaveEnbRrcProtocolIdeal>;
 
-public:
+  public:
+    MmWaveEnbRrcProtocolIdeal();
+    virtual ~MmWaveEnbRrcProtocolIdeal();
 
-  MmWaveEnbRrcProtocolIdeal ();
-  virtual ~MmWaveEnbRrcProtocolIdeal ();
+    // inherited from Object
+    virtual void DoDispose(void);
+    static TypeId GetTypeId(void);
 
-  // inherited from Object
-  virtual void DoDispose (void);
-  static TypeId GetTypeId (void);
+    void SetLteEnbRrcSapProvider(LteEnbRrcSapProvider *p);
+    LteEnbRrcSapUser *GetLteEnbRrcSapUser();
 
-  void SetLteEnbRrcSapProvider (LteEnbRrcSapProvider* p);
-  LteEnbRrcSapUser* GetLteEnbRrcSapUser ();
+    void SetCellId(uint16_t cellId);
 
-  void SetCellId (uint16_t cellId);
+    LteUeRrcSapProvider *GetUeRrcSapProvider(uint16_t rnti);
+    void SetUeRrcSapProvider(uint16_t rnti, LteUeRrcSapProvider *p);
 
-  LteUeRrcSapProvider* GetUeRrcSapProvider (uint16_t rnti);
-  void SetUeRrcSapProvider (uint16_t rnti, LteUeRrcSapProvider* p);
+  private:
+    // methods forwarded from LteEnbRrcSapUser
+    void DoSetupUe(uint16_t rnti, LteEnbRrcSapUser::SetupUeParameters params);
+    void DoRemoveUe(uint16_t rnti);
+    void DoSendSystemInformation(LteRrcSap::SystemInformation msg);
+    void SendSystemInformation(LteRrcSap::SystemInformation msg);
+    void DoSendRrcConnectionSetup(uint16_t rnti, LteRrcSap::RrcConnectionSetup msg);
+    void DoSendRrcConnectionReconfiguration(uint16_t rnti, LteRrcSap::RrcConnectionReconfiguration msg);
+    void DoSendRrcConnectionReestablishment(uint16_t rnti, LteRrcSap::RrcConnectionReestablishment msg);
+    void DoSendRrcConnectionReestablishmentReject(uint16_t rnti, LteRrcSap::RrcConnectionReestablishmentReject msg);
+    void DoSendRrcConnectionRelease(uint16_t rnti, LteRrcSap::RrcConnectionRelease msg);
+    void DoSendRrcConnectionReject(uint16_t rnti, LteRrcSap::RrcConnectionReject msg);
+    void DoSendRrcConnectionSwitch(uint16_t rnti, LteRrcSap::RrcConnectionSwitch msg);
+    void DoSendRrcConnectToMmWave(uint16_t rnti, uint16_t mmWaveCellId);
+    Ptr<Packet> DoEncodeHandoverPreparationInformation(LteRrcSap::HandoverPreparationInfo msg);
+    LteRrcSap::HandoverPreparationInfo DoDecodeHandoverPreparationInformation(Ptr<Packet> p);
+    Ptr<Packet> DoEncodeHandoverCommand(LteRrcSap::RrcConnectionReconfiguration msg);
+    LteRrcSap::RrcConnectionReconfiguration DoDecodeHandoverCommand(Ptr<Packet> p);
 
-private:
-
-  // methods forwarded from LteEnbRrcSapUser
-  void DoSetupUe (uint16_t rnti, LteEnbRrcSapUser::SetupUeParameters params);
-  void DoRemoveUe (uint16_t rnti);
-  void DoSendSystemInformation (LteRrcSap::SystemInformation msg);
-  void SendSystemInformation (LteRrcSap::SystemInformation msg);
-  void DoSendRrcConnectionSetup (uint16_t rnti, LteRrcSap::RrcConnectionSetup msg);
-  void DoSendRrcConnectionReconfiguration (uint16_t rnti, LteRrcSap::RrcConnectionReconfiguration msg);
-  void DoSendRrcConnectionReestablishment (uint16_t rnti, LteRrcSap::RrcConnectionReestablishment msg);
-  void DoSendRrcConnectionReestablishmentReject (uint16_t rnti, LteRrcSap::RrcConnectionReestablishmentReject msg);
-  void DoSendRrcConnectionRelease (uint16_t rnti, LteRrcSap::RrcConnectionRelease msg);
-  void DoSendRrcConnectionReject (uint16_t rnti, LteRrcSap::RrcConnectionReject msg);
-  void DoSendRrcConnectionSwitch (uint16_t rnti, LteRrcSap::RrcConnectionSwitch msg);
-  void DoSendRrcConnectToMmWave (uint16_t rnti, uint16_t mmWaveCellId);
-  Ptr<Packet> DoEncodeHandoverPreparationInformation (LteRrcSap::HandoverPreparationInfo msg);
-  LteRrcSap::HandoverPreparationInfo DoDecodeHandoverPreparationInformation (Ptr<Packet> p);
-  Ptr<Packet> DoEncodeHandoverCommand (LteRrcSap::RrcConnectionReconfiguration msg);
-  LteRrcSap::RrcConnectionReconfiguration DoDecodeHandoverCommand (Ptr<Packet> p);
-
-
-  uint16_t m_rnti;
-  uint16_t m_cellId;
-  LteEnbRrcSapProvider* m_enbRrcSapProvider;
-  LteEnbRrcSapUser* m_enbRrcSapUser;
-  std::map<uint16_t, LteUeRrcSapProvider*> m_enbRrcSapProviderMap;
-  
-};
-
-
+    uint16_t m_rnti;
+    uint16_t m_cellId;
+    LteEnbRrcSapProvider *m_enbRrcSapProvider;
+    LteEnbRrcSapUser *m_enbRrcSapUser;
+    std::map<uint16_t, LteUeRrcSapProvider *> m_enbRrcSapProviderMap;
+  };
 
 }
-
 
 #endif
 // MMWAVE_RRC_PROTOCOL_IDEAL_H
