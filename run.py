@@ -4,8 +4,6 @@ import re
 import sys
 import argparse
 from datetime import datetime
-import shutil
-
 
 def get_parameters():
     # Create the parser
@@ -73,8 +71,8 @@ def create_path(current_dir: str, n_relays: int, seed: int, run: int):
     else:
         path += "relays/"
         
-    path += f"seed {seed}/"
-    path += f"run {run}/"
+    path += f"seed-{seed}/"
+    path += f"run-{run}/"
     path += datetime.now().strftime("%Y.%m.%d-%H.%M.%S")
 
     if not os.path.exists(path):
@@ -90,7 +88,7 @@ def execute_simulation():
     os.system("python2 waf --run mmwave-iab-grid")
 
 
-def move_results(base_path: str, execution_time: int):
+def move_results(base_path: str, execution_number: int):
     files_list = ["DataRadioBearerCreatedTrace.txt",
                   "ENB-UE.txt",
                   "RlcAmBufferSize.txt",
@@ -101,14 +99,14 @@ def move_results(base_path: str, execution_time: int):
                   "enbs.txt",
                   "ues.txt"]
 
-    folder_path = f"{base_path}/execution-{execution_time}/"
+    folder_path = f"{base_path}/execution-{execution_number}/"
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
     for file in files_list:
         print(f"Moved {file}, To {folder_path}")
-        shutil.move(file, folder_path)
-        # os.system(f"mv {file} {folder_path}")
+        #shutil.move(file, folder_path)
+        os.system(f"mv {file} {folder_path}")
 
 
 def update_n_relays_in_source_code(current_dir:str, n_relays: int):
