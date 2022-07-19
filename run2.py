@@ -6,7 +6,7 @@ SEEDS = [1,2,3]
 RUNS = 50
 
 def execute_simulation(n_relays:int, seed:int, run:int):
-    os.system(f"python3 run -r {n_relays} -t {N_EXECUTIONS} -s {seed} -n {run}")
+    os.system(f"python3 run.py -r {n_relays} -t {N_EXECUTIONS} -s {seed} -n {run}")
 
 
 
