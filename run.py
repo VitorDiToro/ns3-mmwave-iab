@@ -116,7 +116,7 @@ def update_n_relays_in_source_code(current_dir:str, n_relays: int):
     file_path = f"{current_dir}scratch/{file_name}"
     with open(file_path, 'r+') as file:
         content = file.read()
-        new_content = re.sub(r'(numRelays)\s*=\s*\d',
+        new_content = re.sub(r'(numRelays)\s*=\s*\d+',
                              r'\1 = {n}'.format(n=n_relays),
                              content, flags=re.M)
         file.seek(0)
@@ -129,7 +129,7 @@ def update_seed_in_source_code(current_dir:str, seed: int):
     with open(file_path, 'r+') as file:
         content = file.read()
         
-        new_content = re.sub(r'(RngSeedManager::SetSeed)\s*\(\d\)',
+        new_content = re.sub(r'(RngSeedManager::SetSeed)\s*\(\d+\)',
                              r'\1({n})'.format(n=seed),
                              content, flags=re.M)
         file.seek(0)
@@ -142,7 +142,7 @@ def update_run_turn_in_source_code(current_dir:str, run: int):
     with open(file_path, 'r+') as file:
         content = file.read()
         
-        new_content = re.sub(r'(unsigned run)\s*=\s*\d',
+        new_content = re.sub(r'(unsigned run)\s*=\s*\d+',
                              r'\1 = {n}'.format(n=run),
                              content, flags=re.M)
         file.seek(0)
