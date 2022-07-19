@@ -223,7 +223,7 @@ main (int argc, char *argv[])
   Config::SetDefault ("ns3::LteRlcUm::ReportBufferStatusTimer", TimeValue(MicroSeconds(500)));
   Config::SetDefault ("ns3::MmWaveHelper::RlcAmEnabled", BooleanValue(rlcAm));
 
-  Config::SetDefault ("ns3::MmWaveFlexTtiMacScheduler::CqiTimerThreshold", UintegerValue(100));
+  Config::SetDefault ("ns3::MmWaveFlexTtiPfMacScheduler::CqiTimerThreshold", UintegerValue(100));
 
   Config::SetDefault ("ns3::MmWave3gppPropagationLossModel::Scenario", StringValue("UMi-StreetCanyon"));
 
