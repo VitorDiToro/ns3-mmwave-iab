@@ -5,6 +5,9 @@ import sys
 import argparse
 from datetime import datetime
 
+
+CPP_FILE_NAME = "mmwave-iab-grid.cc"
+
 def get_parameters():
     # Create the parser
     parser = argparse.ArgumentParser(prog='Micro-wave NS3 simulation runner',
@@ -110,7 +113,7 @@ def move_results(base_path: str, execution_number: int):
 
 
 def update_n_relays_in_source_code(current_dir:str, n_relays: int):
-    file_name = "mmwave-iab-grid.cc"
+    file_name = CPP_FILE_NAME
     file_path = f"{current_dir}scratch/{file_name}"
     with open(file_path, 'r+') as file:
         content = file.read()
@@ -122,7 +125,7 @@ def update_n_relays_in_source_code(current_dir:str, n_relays: int):
         file.truncate()
 
 def update_seed_in_source_code(current_dir:str, seed: int):
-    file_name = "mmwave-iab-grid.cc"
+    file_name = CPP_FILE_NAME
     file_path = f"{current_dir}scratch/{file_name}"
     with open(file_path, 'r+') as file:
         content = file.read()
@@ -135,7 +138,7 @@ def update_seed_in_source_code(current_dir:str, seed: int):
         file.truncate()
 
 def update_run_turn_in_source_code(current_dir:str, run: int):
-    file_name = "mmwave-iab-grid.cc"
+    file_name = CPP_FILE_NAME
     file_path = f"{current_dir}scratch/{file_name}"
     with open(file_path, 'r+') as file:
         content = file.read()
