@@ -66,9 +66,11 @@ def get_parameters():
     return [n_relays , simulation_times, seed, schedule, run_turn, current_dir_path]
 
 
-def create_path(current_dir: str, n_relays: int, seed: int, run: int):
+def create_path(current_dir: str, n_relays: int, seed: int, run: int, schedule_type: str):
 
-    path = f"{current_dir}results/{n_relays}-"
+    path = f"{current_dir}results/{schedule_type.upper()}"
+    
+    path += f"{n_relays}-"
     if n_relays in [0,1]:
         path += "relay/"
     else:
@@ -153,7 +155,7 @@ def update_run_turn_in_source_code(current_dir:str, run: int):
 
 if __name__ == '__main__':
     n_relays, n_executions, seed, schedule_type, run_number, current_dir = get_parameters()
-    output_base_path = create_path(current_dir, n_relays, seed, run_number)
+    output_base_path = create_path(current_dir, n_relays, seed, run_number, schedule_type)
     update_n_relays_in_source_code(current_dir, n_relays)
     update_seed_in_source_code(current_dir, seed)
     update_run_turn_in_source_code(current_dir, run_number)
