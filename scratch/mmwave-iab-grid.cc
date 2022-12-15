@@ -26,7 +26,7 @@
  */
 
 #include <ns3/buildings-module.h>
-#include "ns3/mmwave-helper.h"
+#include "ns3/mmwave-helper.h"                       //mmWave
 #include "ns3/lte-module.h"
 #include "ns3/epc-helper.h"
 #include "ns3/core-module.h"
@@ -37,7 +37,7 @@
 #include "ns3/applications-module.h"
 #include "ns3/point-to-point-helper.h"
 #include "ns3/config-store.h"
-#include "ns3/mmwave-point-to-point-epc-helper.h"
+#include "ns3/mmwave-point-to-point-epc-helper.h"    //mmWave
 //#include "ns3/gtk-config-store.h"
 
 using namespace ns3;
@@ -187,12 +187,20 @@ main (int argc, char *argv[])
   LogComponentEnable("MmWaveIabNetDevice", LOG_LEVEL_INFO);
 
   
-  CommandLine cmd;
-  unsigned run = 0;
-  bool rlcAm = false;
-  uint32_t numRelays = 1;
-  uint32_t rlcBufSize = 10;
-  uint32_t interPacketInterval = 200;
+  CommandLine cmd;                      // Values in author repository
+  unsigned run = 0;                     // 0
+  bool rlcAm = false;                   // false
+  uint32_t numRelays = 4;               // N.A. - {0~4}
+  uint32_t rlcBufSize = 10;             // 10
+  uint32_t interPacketInterval = 50;    // 200
+  /* ==== Packet Interval ====
+   *  Time(us) | speed(Mbits)
+   *  ---------+-------------
+   *    50 us  |  224 Mbits
+   *   200 us  |   56 Mbits
+   *   400 us  |   28 Mbits
+   */
+   
   cmd.AddValue("run", "run for RNG (for generating different deterministic sequences for different drops)", run);
   cmd.AddValue("am", "RLC AM if true", rlcAm);
   cmd.AddValue("numRelay", "Number of relays", numRelays);
@@ -227,8 +235,7 @@ main (int argc, char *argv[])
 
   Config::SetDefault ("ns3::MmWave3gppPropagationLossModel::Scenario", StringValue("UMi-StreetCanyon"));
 
-
-	RngSeedManager::SetSeed (1);
+	RngSeedManager::SetSeed(1);  
 	RngSeedManager::SetRun (run);
 
   Config::SetDefault ("ns3::MmWavePhyMacCommon::SymbolsPerSubframe", UintegerValue(240));
@@ -452,7 +459,7 @@ main (int argc, char *argv[])
   clientApps.Stop (Seconds (1.2));
   clientApps.Start (Seconds (0.5));
 
-  mmwaveHelper->EnableTraces ();
+  mmwaveHelper->EnableTraces();
 
   Simulator::Stop(Seconds(1.2));
   Simulator::Run();

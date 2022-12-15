@@ -5,11 +5,31 @@
  *      Author: sourjya
  */
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #include <ns3/log.h>
 #include <ns3/abort.h>
 #include "mmwave-flex-tti-pf-mac-scheduler.h"
 #include <ns3/lte-common.h>
 #include <ns3/boolean.h>
+
 #include <stdlib.h> /* abs */
 #include "mmwave-mac-pdu-header.h"
 #include "mmwave-mac-pdu-tag.h"
@@ -161,7 +181,6 @@ namespace ns3
 		NS_LOG_FUNCTION(this);
 		m_macSchedSapProvider = new MmWaveFlexTtiPfMacSchedSapProvider(this);
 		m_macCschedSapProvider = new MmWaveFlexTtiPfMacCschedSapProvider(this);
-
 		m_iabBackahulSapProvider = new MemberMmWaveUeMacCschedSapProvider<MmWaveFlexTtiPfMacScheduler>(this);
 
 		m_iabBusySubframeAllocation.clear();
@@ -248,6 +267,36 @@ namespace ns3
 											  MakeUintegerChecker<uint8_t>());
 
 		return tid;
+	}
+
+	void
+	MmWaveFlexTtiPfMacScheduler::SetMacSchedSapUser(MmWaveMacSchedSapUser *sap)
+	{
+		m_macSchedSapUser = sap;
+	}
+
+	void
+	MmWaveFlexTtiPfMacScheduler::SetMacCschedSapUser(MmWaveMacCschedSapUser *sap)
+	{
+		m_macCschedSapUser = sap;
+	}
+
+	void
+	MmWaveFlexTtiPfMacScheduler::SetIabScheduler(bool iabScheduler)
+	{
+		m_iabScheduler = iabScheduler;
+	}
+
+	MmWaveMacSchedSapProvider *
+	MmWaveFlexTtiPfMacScheduler::GetMacSchedSapProvider()
+	{
+		return m_macSchedSapProvider;
+	}
+
+	MmWaveMacCschedSapProvider *
+	MmWaveFlexTtiPfMacScheduler::GetMacCschedSapProvider()
+	{
+		return m_macCschedSapProvider;
 	}
 
 	// IAB methods
@@ -347,36 +396,6 @@ namespace ns3
 		// }
 
 		m_iabBusySubframeAllocation.at(subframe) = newInfo;
-	}
-
-	void
-	MmWaveFlexTtiPfMacScheduler::SetMacSchedSapUser(MmWaveMacSchedSapUser *sap)
-	{
-		m_macSchedSapUser = sap;
-	}
-
-	void
-	MmWaveFlexTtiPfMacScheduler::SetMacCschedSapUser(MmWaveMacCschedSapUser *sap)
-	{
-		m_macCschedSapUser = sap;
-	}
-
-	MmWaveMacSchedSapProvider *
-	MmWaveFlexTtiPfMacScheduler::GetMacSchedSapProvider()
-	{
-		return m_macSchedSapProvider;
-	}
-
-	MmWaveMacCschedSapProvider *
-	MmWaveFlexTtiPfMacScheduler::GetMacCschedSapProvider()
-	{
-		return m_macCschedSapProvider;
-	}
-
-	void
-	MmWaveFlexTtiPfMacScheduler::SetIabScheduler(bool iabScheduler)
-	{
-		m_iabScheduler = iabScheduler;
 	}
 
 	void

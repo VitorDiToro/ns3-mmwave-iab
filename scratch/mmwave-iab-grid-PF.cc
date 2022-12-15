@@ -187,12 +187,21 @@ main (int argc, char *argv[])
   LogComponentEnable("MmWaveIabNetDevice", LOG_LEVEL_INFO);
 
   
-  CommandLine cmd;
-  unsigned run = 0;
-  bool rlcAm = false;
-  uint32_t numRelays = 0;
-  uint32_t rlcBufSize = 10;
-  uint32_t interPacketInterval = 200;
+  CommandLine cmd;                      // Values in author repository
+  uint8_t seed = 1;                     //    1
+  unsigned run = 0;                     //    0
+  bool rlcAm = false;                   //    false
+  uint32_t numRelays = 4;               //    N.A. - {0~4}
+  uint32_t rlcBufSize = 10;             //    10
+  uint32_t interPacketInterval = 400;    //    200
+  /* ==== Packet Interval ====
+   *  Time(us) | speed(Mbits)
+   *  ---------+-------------
+   *    50 us  |  224 Mbits
+   *   200 us  |   56 Mbits
+   *   400 us  |   28 Mbits
+   */
+  
   cmd.AddValue("run", "run for RNG (for generating different deterministic sequences for different drops)", run);
   cmd.AddValue("am", "RLC AM if true", rlcAm);
   cmd.AddValue("numRelay", "Number of relays", numRelays);
@@ -227,8 +236,7 @@ main (int argc, char *argv[])
 
   Config::SetDefault ("ns3::MmWave3gppPropagationLossModel::Scenario", StringValue("UMi-StreetCanyon"));
 
-
-	RngSeedManager::SetSeed (1);
+	RngSeedManager::SetSeed (seed);
 	RngSeedManager::SetRun (run);
 
   Config::SetDefault ("ns3::MmWavePhyMacCommon::SymbolsPerSubframe", UintegerValue(240));
@@ -237,6 +245,7 @@ main (int argc, char *argv[])
 
   Ptr<MmWaveHelper> mmwaveHelper = CreateObject<MmWaveHelper> ();
   mmwaveHelper->SetAttribute ("PathlossModel", StringValue ("ns3::MmWave3gppBuildingsPropagationLossModel"));
+  mmwaveHelper->SetAttribute ("Scheduler", StringValue ("ns3::MmWaveFlexTtiPfMacScheduler"));
   Ptr<MmWavePointToPointEpcHelper>  epcHelper = CreateObject<MmWavePointToPointEpcHelper> ();
   mmwaveHelper->SetEpcHelper (epcHelper);
   mmwaveHelper->Initialize();
