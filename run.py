@@ -43,7 +43,7 @@ def get_parameters():
                         type=str,
                         action='store',
                         required=False,
-                        choices=["RF", "rf", "PF", "pf"],
+                        choices=["RR", "rr", "PF", "pf"],
                         default="RR",
                         help='Type of schedule used on simulation. RR(Round Robin) or PF(Proportional Fair)')
                             
