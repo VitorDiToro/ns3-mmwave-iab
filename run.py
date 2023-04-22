@@ -6,8 +6,10 @@ import sys
 import argparse
 from datetime import datetime
 
-
-CPP_FILE_NAME = "mmwave-iab-grid.cc"
+BIN_RR_FILE_NAME = "mmwave-iab-grid"
+BIN_PF_FILE_NAME = "mmwave-iab-grid-PF"
+CPP_PF_FILE_NAME = "mmwave-iab-grid-PF.cc"
+CPP_RR_FILE_NAME = "mmwave-iab-grid.cc"
 
 def get_parameters():
     # Create the parser
@@ -27,14 +29,15 @@ def get_parameters():
                         metavar='Simulation Times',
                         type=int,
                         action='store',
-                        required=True,
-                        help='Number of time to run the same simulation')
+                        required=False,
+                        default=1,
+                        help='Number of times to run the same simulation')
     
     parser.add_argument('-s',
                         metavar='Seed',
                         type=int,
                         action='store',
-                        required=True,
+                        required=False,
                         default=1,
                         help='Random seed (Default: 1)') 
       
@@ -42,18 +45,34 @@ def get_parameters():
                         metavar='Schedule: RR/PF',
                         type=str,
                         action='store',
-                        required=False,
+                        required=True,
                         choices=["RR", "rr", "PF", "pf"],
                         default="RR",
                         help='Type of schedule used on simulation. RR(Round Robin) or PF(Proportional Fair)')
                             
     parser.add_argument('-n',
-                        metavar='Execution number',
+                        metavar='Execution RUN number',
+                        type=int,
+                        action='store',
+                        required=False,
+                        default=0,
+                        help='Define execution RUN on RngSeedManager (Default: 0)') 
+
+    parser.add_argument('-u',
+                        metavar='Number of UEs',
                         type=int,
                         action='store',
                         required=True,
-                        default=0,
-                        help='Define execution RUN on RngSeedManager (Default: 0)') 
+                        help='Define de number of UEs in simulation') 
+
+    parser.add_argument('-i',
+                        metavar='interPacketInterval',
+                        type=int,
+                        action='store',
+                        required=True,
+                        help='Define interPacketInterval -  50 us = 224 Mbits | 200 us = 56 Mbits | 400 us = 28 Mbits') 
+
+                        
 
     args = parser.parse_args()
     current_dir_path = sys.argv[0].replace(sys.argv[0].split("/")[-1], '')
@@ -63,13 +82,18 @@ def get_parameters():
     seed = args.s
     schedule = args.c
     run_turn = args.n
+    num_ues = args.u
+    inter_packet_interval = args.i
 
-    return [n_relays , simulation_times, seed, schedule, run_turn, current_dir_path]
+    return [n_relays , simulation_times, seed, schedule, run_turn, num_ues, inter_packet_interval, current_dir_path]
 
 
-def create_path(current_dir: str, n_relays: int, seed: int, run: int, schedule_type: str):
+def create_path(current_dir: str, n_relays: int, seed: int, run: int, schedule_type: str, num_ues: str, inter_packet_interval: str):
 
-    path = f"{current_dir}results/{schedule_type.upper()}"
+    path = f"{current_dir}results/{schedule_type.upper()}/"
+
+    path += f"{num_ues}UEs/"
+    path += f"{inter_packet_interval}us/"
     
     path += f"{n_relays}-"
     if n_relays in [0,1]:
@@ -87,11 +111,14 @@ def create_path(current_dir: str, n_relays: int, seed: int, run: int, schedule_t
     return path
 
 
-def execute_simulation():
+def execute_simulation(schedule_type: str):
     os.system("python2 waf configure --build-profile=debug --enable-examples")
     os.system("python2 waf")
     
-    os.system("python2 waf --run mmwave-iab-grid")
+    if schedule_type.upper() == "RR":
+        os.system(f"python2 waf --run {BIN_RR_FILE_NAME}")
+    else:
+        os.system(f"python2 waf --run {BIN_PF_FILE_NAME}")
 
 
 def move_results(base_path: str, execution_number: int):
@@ -115,8 +142,12 @@ def move_results(base_path: str, execution_number: int):
         os.system(f"mv {file} {folder_path}")
 
 
-def update_n_relays_in_source_code(current_dir:str, n_relays: int):
-    file_name = CPP_FILE_NAME
+def update_n_relays_in_source_code(current_dir:str, n_relays:int, schedule_type:str):
+    if schedule_type.upper() == "RR":
+        file_name = CPP_RR_FILE_NAME
+    else:
+        file_name = CPP_PF_FILE_NAME
+    
     file_path = f"{current_dir}scratch/{file_name}"
     with open(file_path, 'r+') as file:
         content = file.read()
@@ -127,8 +158,12 @@ def update_n_relays_in_source_code(current_dir:str, n_relays: int):
         file.write(new_content)
         file.truncate()
 
-def update_seed_in_source_code(current_dir:str, seed: int):
-    file_name = CPP_FILE_NAME
+def update_seed_in_source_code(current_dir:str, seed: int, schedule_type:str):
+    if schedule_type.upper() == "RR":
+        file_name = CPP_RR_FILE_NAME
+    else:
+        file_name = CPP_PF_FILE_NAME
+
     file_path = f"{current_dir}scratch/{file_name}"
     with open(file_path, 'r+') as file:
         content = file.read()
@@ -140,8 +175,12 @@ def update_seed_in_source_code(current_dir:str, seed: int):
         file.write(new_content)
         file.truncate()
 
-def update_run_turn_in_source_code(current_dir:str, run: int):
-    file_name = CPP_FILE_NAME
+def update_run_turn_in_source_code(current_dir:str, run: int, schedule_type:str):
+    if schedule_type.upper() == "RR":
+        file_name = CPP_RR_FILE_NAME
+    else:
+        file_name = CPP_PF_FILE_NAME
+
     file_path = f"{current_dir}scratch/{file_name}"
     with open(file_path, 'r+') as file:
         content = file.read()
@@ -154,13 +193,51 @@ def update_run_turn_in_source_code(current_dir:str, run: int):
         file.truncate()
 
 
+def update_number_of_ues_in_source_code(current_dir:str, num_ues: int, schedule_type:str):
+    if schedule_type.upper() == "RR":
+        file_name = CPP_RR_FILE_NAME
+    else:
+        file_name = CPP_PF_FILE_NAME
+
+    file_path = f"{current_dir}scratch/{file_name}"
+    with open(file_path, 'r+') as file:
+        content = file.read()
+        
+        new_content = re.sub(r'(ueNodes.Create)\(\d+\)',
+                             r'\1({n})'.format(n=num_ues),
+                             content, flags=re.M)
+        file.seek(0)
+        file.write(new_content)
+        file.truncate()
+
+
+def update_inter_packet_interval_in_source_code(current_dir:str, inter_packet_interval: int, schedule_type:str):
+    if schedule_type.upper() == "RR":
+        file_name = CPP_RR_FILE_NAME
+    else:
+        file_name = CPP_PF_FILE_NAME
+
+    file_path = f"{current_dir}scratch/{file_name}"
+    with open(file_path, 'r+') as file:
+        content = file.read()
+        
+        new_content = re.sub(r'(uint32_t interPacketInterval)\s*=\s*\d+',
+                             r'\1 = {n}'.format(n=inter_packet_interval),
+                             content, flags=re.M)
+        file.seek(0)
+        file.write(new_content)
+        file.truncate()
+
+
 if __name__ == '__main__':
-    n_relays, n_executions, seed, schedule_type, run_number, current_dir = get_parameters()
-    output_base_path = create_path(current_dir, n_relays, seed, run_number, schedule_type)
-    update_n_relays_in_source_code(current_dir, n_relays)
-    update_seed_in_source_code(current_dir, seed)
-    update_run_turn_in_source_code(current_dir, run_number)
+    n_relays, n_executions, seed, schedule_type, run_number, num_ues, inter_packet_interval, current_dir = get_parameters()
+    output_base_path = create_path(current_dir, n_relays, seed, run_number, schedule_type, num_ues, inter_packet_interval)
+    update_n_relays_in_source_code(current_dir, n_relays, schedule_type)
+    update_seed_in_source_code(current_dir, seed, schedule_type)
+    update_run_turn_in_source_code(current_dir, run_number, schedule_type)
+    update_number_of_ues_in_source_code(current_dir, num_ues, schedule_type)
+    update_inter_packet_interval_in_source_code(current_dir, inter_packet_interval, schedule_type)
     
     for execution in range(1, n_executions+1):
-        execute_simulation()
+        execute_simulation(schedule_type)
         move_results(output_base_path, execution)
